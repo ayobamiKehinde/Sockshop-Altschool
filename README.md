@@ -4,45 +4,6 @@
 Overview
 This project demonstrates the deployment of a microservices-based application, the Socks Shop, on a Kubernetes cluster using Infrastructure as Code (IaaC). We automate the setup and deployment process for quick, reliable, and secure application delivery. The deployment includes monitoring, logging, and security features such as HTTPS with Let's Encrypt, Prometheus for monitoring, and network perimeter security.
 
-Table of Contents
-Project Structure
-Prerequisites
-Architecture
-Infrastructure as Code Setup
-Deployment Pipeline
-Monitoring and Logging
-Security
-Bonus Features
-Conclusion
-Project Structure
-css
-Copy code
-.
-├── ansible/
-│   ├── playbooks/
-│   ├── roles/
-│   └── group_vars/
-├── terraform/
-│   ├── main.tf
-│   ├── variables.tf
-│   ├── outputs.tf
-│   ├── providers.tf
-│   └── ...
-├── kubernetes/
-│   ├── manifests/
-│   │   ├── deployment.yaml
-│   │   ├── service.yaml
-│   │   ├── ingress.yaml
-│   └── ...
-├── prometheus/
-│   ├── prometheus.yaml
-│   └── alertmanager.yaml
-├── grafana/
-│   ├── dashboards/
-│   └── datasources/
-├── README.md
-└── scripts/
-    └── deploy.sh
 Ansible Directory: Contains playbooks, roles, and group variables for configuration management.
 Terraform Directory: Contains Terraform scripts to provision the infrastructure.
 Kubernetes Directory: Contains Kubernetes manifests for deploying the microservices.
