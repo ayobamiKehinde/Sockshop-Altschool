@@ -1,0 +1,55 @@
+- hosts: localhost
+  become: true
+  connection: local
+  vars:
+    ansible_python_interpreter: /Users/wikiwoo/ansible_venv/bin/python3
+    k8s_kubeconfig: /Users/wikiwoo/.kube/config
+    manifests_directory: /Users/wikiwoo/Socks-shop-deployment/manifests
+    prometheus_manifests_directory: /Users/wikiwoo/Socks-shop-deployment/Prometheus-manifests
+    crds_directory: /Users/wikiwoo/Socks-shop-deployment/prometheus-operator-crd
+    namespace: sock-shop
+
+  tasks:
+    - name: Create Kubernetes namespace
+      command: >
+        kubectl apply -f {{ manifests_directory }} --namespace {{ namespace }} --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Deploy Socks Shop application
+      command: >
+        kubectl apply -f {{ manifests_directory }} --namespace {{ namespace }} --kubeconfig={{ k8s_kubeconfig }}
+      environment:
+        KUBECONFIG: "{{ k8s_kubeconfig }}"
+
+    - name: Replace Prometheus Operator CRDs - Alertmanagers
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_alertmanagers.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Replace Prometheus Operator CRDs - PodMonitors
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_podmonitors.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Replace Prometheus Operator CRDs - Prometheuses
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_prometheuses.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Replace Prometheus Operator CRDs - PrometheusRules
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_prometheusrules.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Replace Prometheus Operator CRDs - ServiceMonitors
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_servicemonitors.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Replace Prometheus Operator CRDs - ThanosRulers
+      command: >
+        kubectl replace --force -f {{ crds_directory }}/monitoring.coreos.com_thanosrulers.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Create Prometheus ServiceMonitor
+      command: >
+        kubectl apply -f {{ prometheus_manifests_directory }}/prometheusOperator-serviceMonitor.yaml --kubeconfig={{ k8s_kubeconfig }}
+
+    - name: Deploy Prometheus Rules
+      command: >
+        kubectl apply -f {{ prometheus_manifests_directory }}/prometheusOperator-prometheusRule.yaml --kubeconfig={{ k8s_kubeconfig }}
+      environment:
+        KUBECONFIG: "{{ k8s_kubeconfig }}"
